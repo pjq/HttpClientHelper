@@ -1,0 +1,47 @@
+Use the HttpClient to visit the secure server(https) which has self-signed KeyStore on Android.
+
+The HttpClientHelper,it support trust the self-signed KeyStore You can use getInstance() to get it.And use the static function createNewDefaultHttpClient() to create the special http/https client.
+
+
+The SSLSocketFactory,it extends SSLSocketFactory. It is used to trust the self-signed KeyStore while connection to the secure server. 
+
+Example: 
+You can just use the static method to create the new DefaultHttpClient. 
+
+ HttpClient httpClient = MySSLSocketFactory.createNewHttpClient();
+ HttpGet httpget = new HttpGet("https://172.21.30.117/index.html");
+ HttpResponse response = httpClient.execute(httpget);
+ 
+Or you can use it as the SSLSocketFactory to create the customer https scheme 
+ public void registerHttpsScheme(HttpClient httpClient) {
+     SSLSocketFactory factory;
+     try {
+         factory = new SSLSocketFactory(null);
+         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+         trustStore.load(null, null);
+         factory = new MySSLSocketFactory(trustStore);
+         factory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+         Scheme https = new Scheme("https", factory, 443);
+         httpClient.getConnectionManager().getSchemeRegistry().register(https);
+     } catch (KeyManagementException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     } catch (NoSuchAlgorithmException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     } catch (KeyStoreException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     } catch (UnrecoverableKeyException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     } catch (CertificateException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+     }
+ }
+ 
+
