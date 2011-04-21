@@ -4,9 +4,6 @@ package com.arcsoft.httpclient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
@@ -17,12 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 
 public class HttpsClientDemo extends Activity {
     /** Called when the activity is first created. */
@@ -38,7 +29,9 @@ public class HttpsClientDemo extends Activity {
 
                 try {
                     HttpClient httpClient = null;
-                    if (false) {
+
+                    // Two ways to create the HttpClient.
+                    if (true) {
                         HttpClientHelper helper = HttpClientHelper.getInstance();
                         httpClient = helper.createNewDefaultHttpClient();
                     } else {
@@ -60,42 +53,6 @@ public class HttpsClientDemo extends Activity {
             }
 
         }).start();
-    }
-
-    /**
-     * Register the https scheme.
-     */
-    public void registerHttpsSchemeWithKeyStore() {
-
-        try {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            InputStream inputStream = getAssets().open("ishare.cer");
-            // keyStore.load(inputStream, "password".toCharArray());
-            keyStore.load(inputStream, null);
-
-            SSLSocketFactory factory = new SSLSocketFactory(keyStore);
-            Scheme https = new Scheme("https", factory, 443);
-            SchemeRegistry sr = new SchemeRegistry();
-            sr.register(https);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     /**

@@ -79,7 +79,7 @@ public class HttpClientHelper {
     /**
      * Set Proxy here,including http proxy and https proxy
      */
-    private static void setProxy() {
+    protected static void setProxy() {
         // Set Http Proxy
         System.getProperties().setProperty("http.proxyHost", "10.85.40.153");
         System.getProperties().setProperty("http.proxyPort", "8000");
