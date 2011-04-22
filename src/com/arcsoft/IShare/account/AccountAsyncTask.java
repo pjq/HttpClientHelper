@@ -5,10 +5,41 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
- * The AccountAsyncTask,you can set the {@link #mListener} to add the
- * {@link TaskListener}.
+ * The AccountAsyncTask,if you need to listener the task status,pass
+ * {@link TaskListener} to the constructor. <br>
+ * Example
+ * 
+ * <pre>
+ * RegisterTask registerTask = new RegisterTask();
+ * AccountAsyncTask accountAsyncTask = new AccountAsyncTask(new TaskListener() {
+ * 
+ *     &#064;Override
+ *     public void onTaskStart() {
+ *         // TODO Auto-generated method stub
+ *         Log.i(TAG, &quot;onTaskStart&quot;);
+ * 
+ *     }
+ * 
+ *     &#064;Override
+ *     public void onTaskProgressUpdate(Integer... values) {
+ *         // TODO Auto-generated method stub
+ *         Log.i(TAG, &quot;onTaskProgressUpdate,values=&quot; + values[0]);
+ * 
+ *     }
+ * 
+ *     &#064;Override
+ *     public void OnTaskFinished(String result) {
+ *         // TODO Auto-generated method stub
+ *         Log.i(TAG, &quot;OnTaskFinished,result=&quot; + result);
+ * 
+ *     }
+ * });
+ * 
+ * accountAsyncTask.execute(registerTask);
+ * </pre>
  * 
  * @author pjq0274@arcsoft.com
  * @date 2011-3-22
