@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, HttpClient!</string>
-    <string name="app_name">HttpClient</string>
-    <string name="soap"></string>
-            
+	<string name="hello">Hello World, HttpClient!</string>
+	<string name="app_name">HttpClient</string>
+	<string name="soap"></string>
 </resources>

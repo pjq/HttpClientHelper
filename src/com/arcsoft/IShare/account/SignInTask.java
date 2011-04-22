@@ -11,6 +11,7 @@ public class SignInTask extends BaseTask {
 
     public SignInTask() {
         // TODO Auto-generated constructor stub
+        mTaskDesc = TAG;
         mTaskId = TASK_ACCOUNT_SIGN_IN;
     }
 

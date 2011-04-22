@@ -6,7 +6,9 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -18,7 +20,23 @@ import java.security.cert.CertificateException;
  * The {@link HttpClient} helper,it support trust the self-signed
  * {@link KeyStore} You can use {@link #getInstance()} to get it.And use the
  * static function {@link #createNewDefaultHttpClient()} to create the special
- * http/https client.
+ * http/https client.<br>
+ * Example
+ * 
+ * <pre>
+ * HttpClient httpClient = null;
+ * HttpClientHelper helper = null;
+ * 
+ * // Two ways to create the HttpClient.
+ * if (true) {
+ *     helper = HttpClientHelper.getInstance();
+ *     httpClient = helper.createNewDefaultHttpClient();
+ * } else {
+ *     helper = HttpClientHelper.getInstance();
+ *     httpClient = new DefaultHttpClient();
+ *     helper.registerHttpsScheme(httpClient);
+ * }
+ * </pre>
  * 
  * @author pjq0274@arcsoft.com
  * @date 2011-4-21
@@ -127,5 +145,32 @@ public class HttpClientHelper {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Read data from InputStreamReader
+     * 
+     * @param isr InputStreamReader
+     * @return The Data read from The InputStreamReader
+     */
+    public String readFromInputStream(InputStreamReader isr) {
+        String result = "";
+
+        BufferedReader rd = new BufferedReader(isr);
+        String line;
+
+        try {
+            while ((line = rd.readLine()) != null) {
+                result += line + '\n';
+            }
+
+            isr.close();
+            rd.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

@@ -1,37 +1,72 @@
 
 package com.arcsoft.IShare.account;
 
+import android.util.Log;
+
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * The task executor,if you don't need it anymore,MUST call
+ * {@link #stopExecutorThread()} to stop it.
+ * 
  * @author pjq0274@arcsoft.com
  * @date 2011-4-22
  */
 
 public class TaskExecutor {
+    public static final String TAG = TaskExecutor.class.getSimpleName();
+
     private ExecutorService mExecutorService;
 
     private PriorityQueue<BaseTask> mPriorityQueue;
 
     private Object mLock = new Object();
 
-    private Thread mExecutorThread = new Thread(new Runnable() {
+    private boolean mStopExecutorThread = false;
+
+    private Thread mExecutorThread = null;
+
+    // private Thread mExecutorThread = new Thread(new Runnable() {
+    // @Override
+    // public void run() {
+    // // TODO Auto-generated method stub
+    // while (!mStopExecutorThread) {
+    // // Run the task of the Queue.
+    // synchronized (mLock) {
+    // BaseTask task = null;
+    // while (null != (task = mPriorityQueue.poll())) {
+    // }
+    // mExecutorService.execute(task);
+    // }
+    //
+    // try {
+    // Thread.sleep(500);
+    // } catch (InterruptedException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+    // }
+    // }
+    // });
+
+    class ExecutorThread extends Thread {
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            while (!mExecutorThread.isInterrupted()) {
+            while (!mStopExecutorThread) {
                 // Run the task of the Queue.
                 synchronized (mLock) {
                     BaseTask task = null;
                     while (null != (task = mPriorityQueue.poll())) {
+                        mExecutorService.execute(task);
                     }
-                    mExecutorService.execute(task);
                 }
 
                 try {
+                    Log.i(TAG, "Sleep for 500ms");
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -39,10 +74,11 @@ public class TaskExecutor {
                 }
             }
         }
-    });
+    }
 
     public TaskExecutor() {
         // TODO Auto-generated constructor stub
+        mExecutorThread = new ExecutorThread();
         mExecutorService = Executors.newFixedThreadPool(5);
         mPriorityQueue = new PriorityQueue<BaseTask>();
         mExecutorThread.start();
@@ -113,6 +149,15 @@ public class TaskExecutor {
         }
 
         return result;
+    }
+
+    /**
+     * Stop the executor thread.
+     */
+    public void stopExecutorThread() {
+        mStopExecutorThread = true;
+        // Shutdown
+        mExecutorService.shutdownNow();
     }
 
 }
