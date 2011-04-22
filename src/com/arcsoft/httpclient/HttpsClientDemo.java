@@ -1,10 +1,24 @@
 
 package com.arcsoft.httpclient;
 
+import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,6 +28,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpsClientDemo extends Activity {
     /** Called when the activity is first created. */
@@ -46,6 +63,26 @@ public class HttpsClientDemo extends Activity {
                     InputStream inputStream = response.getEntity().getContent();
                     String result = readFromInputStream(new InputStreamReader(inputStream));
                     Log.i("HttpClientDemo", result);
+
+        
+                    
+                    HttpPost httpPost = new HttpPost("http://180.168.105.166:8012/AASService.asmx/Register");
+                    // StringEntity entity = new StringEntity(
+                    // "nType=string&strKey=string&strPassword=string","UTF-8");
+                    
+                    List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+                    formparams.add(new BasicNameValuePair("nType", "string"));
+                    formparams.add(new BasicNameValuePair("strKey", "string"));
+                    formparams.add(new BasicNameValuePair("strPassword", "string"));
+                    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, HTTP.UTF_8);   
+                   
+                    httpPost.setEntity(entity);
+                    response = httpClient.execute(httpPost);
+                    System.out.println(response.getStatusLine());
+                    inputStream = response.getEntity().getContent();
+                    result = readFromInputStream(new InputStreamReader(inputStream));
+                    Log.i("HttpClientDemo,post response", result);
+
                 } catch (Exception e) {
                     // TODO: handle exception
                     e.printStackTrace();
@@ -62,10 +99,11 @@ public class HttpsClientDemo extends Activity {
      * @return The Data read from The InputStreamReader
      */
     public static String readFromInputStream(InputStreamReader isr) {
-        String result = null;
+        String result="";
 
         BufferedReader rd = new BufferedReader(isr);
         String line;
+       
         try {
             while ((line = rd.readLine()) != null) {
                 result += line + '\n';
